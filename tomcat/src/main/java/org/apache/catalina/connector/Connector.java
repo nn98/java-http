@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.apache.coyote.http11.Http11Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,13 @@ public class Connector implements Runnable {
 
     public Connector(final int port, final int acceptCount, final int maxThreads) {
         this.serverSocket = createServerSocket(port, acceptCount);
-        this.executorService = Executors.newFixedThreadPool(checkMaxThreads(maxThreads));
+        this.executorService = new ThreadPoolExecutor(
+                checkMaxThreads(maxThreads),
+                checkMaxThreads(maxThreads),
+                60L,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(acceptCount)
+        );
         this.stopped = false;
     }
 

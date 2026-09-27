@@ -8,7 +8,7 @@ public class SessionManager {
 
     private static final SessionManager INSTANCE = new SessionManager();
 
-    private final Map<String, Session> sessionInfo = new ConcurrentHashMap<String, Session>();
+    private final Map<String, Session> sessionInfo = new ConcurrentHashMap<>();
 
     private SessionManager() {
     }
@@ -23,10 +23,6 @@ public class SessionManager {
 
     public Session findSession(final String id) {
         return sessionInfo.get(id);
-    }
-
-    public void clear() {
-        sessionInfo.clear();
     }
 
     public boolean hasUser(String sessionId) {
